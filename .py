@@ -36,28 +36,45 @@ class Pokemon:
         print("LVL/", 3 * (1 + np.mean([Pokemon2.attack, Pokemon2.defense])))
 
         time.sleep(2)
-
         # Type advantage logic
         version = ['Fire', 'Water', 'Grass']
-        for i, k in enumerate(version):
-            if self.types == k:
-                if Pokemon2.types == k:
-                    string_1_attack = "It's not very effective..."
-                    string_2_attack = "It's not very effective..."
-                elif Pokemon2.types == version[(i + 1) % 3]:
-                    Pokemon2.attack *= 2
-                    Pokemon2.defense *= 2
-                    self.attack /= 2
-                    self.defense /= 2
-                    string_1_attack = "It's not very effective..."
-                    string_2_attack = "It's super effective!"
-                elif Pokemon2.types == version[(i + 2) % 3]:
-                    self.attack *= 2
-                    self.defense *= 2
-                    Pokemon2.attack /= 2
-                    Pokemon2.defense /= 2
-                    string_1_attack = "It's super effective!"
-                    string_2_attack = "It's not very effective..."
+        if self.types in version and Pokemon2.types in version:
+            i = version.index(self.types)
+            if Pokemon2.types == self.types:
+                string_1_attack = "It's not very effective..."
+                string_2_attack = "It's not very effective..."
+            elif Pokemon2.types == version[(i + 1) % 3]:
+                Pokemon2.attack *= 2
+                Pokemon2.defense *= 2
+                self.attack /= 2
+                self.defense /= 2
+                string_1_attack = "It's not very effective..."
+                string_2_attack = "It's super effective!"
+            elif Pokemon2.types == version[(i + 2) % 3]:
+                self.attack *= 2
+                self.defense *= 2
+                Pokemon2.attack /= 2
+                Pokemon2.defense /= 2
+                string_1_attack = "It's super effective!"
+                string_2_attack = "It's not very effective..."
+        # Normal/Fighting logic
+        elif self.types == 'Fighting' and Pokemon2.types == 'Normal':
+            self.attack *= 2
+            self.defense *= 2
+            Pokemon2.attack /= 2
+            Pokemon2.defense /= 2
+            string_1_attack = "It's super effective!"
+            string_2_attack = "It's not very effective..."
+        elif self.types == 'Normal' and Pokemon2.types == 'Fighting':
+            Pokemon2.attack *= 2
+            Pokemon2.defense *= 2
+            self.attack /= 2
+            self.defense /= 2
+            string_1_attack = "It's not very effective..."
+            string_2_attack = "It's super effective!"
+        else:
+            string_1_attack = "It's not very effective..."
+            string_2_attack = "It's not very effective..."
 
         # This Is The Battle Loop
         while self.bars > 0 and Pokemon2.bars > 0:
@@ -168,6 +185,37 @@ if __name__ == '__main__':
     Meowscarada = Pokemon('Meowscarada', 'Grass', ['Flower Trick', 'Leaf Blade', 'Razor Leaf', 'Vine Whip'], {'ATTACK': 11, 'DEFENSE': 7})
     Skeledirge = Pokemon('Skeledirge', 'Fire', ['Torch Song', 'Flamethrower', 'Ember', 'Fire Punch'], {'ATTACK': 12, 'DEFENSE': 6})
     Quaquaval = Pokemon('Quaquaval', 'Water', ['Aqua Step', 'Hydro Pump', 'Aqua Jet', 'Surf'], {'ATTACK': 10, 'DEFENSE': 8})
-   
-    # Picks Who Fights Change this to ______.fight(______)
-    Charizard.fight(Venusaur)
+
+    Machamp = Pokemon('Machamp', 'Fighting', ['Dynamic Punch', 'Cross Chop', 'Karate Chop', 'Low Sweep'], {'ATTACK': 15, 'DEFENSE': 5})
+    Snorlax = Pokemon('Snorlax', 'Normal', ['Body Slam', 'Hyper Beam', 'Sleeping ZZz..', 'Hyper Snore'], {'ATTACK': 5, 'DEFENSE': 20})
+
+    pokemons = [
+        Charizard, Venusaur, Blastoise, Quilava, Bayleef, Feraligatr,
+        Blaziken, Sceptile, Swampert, Rapidash, Dewgong, Kingler, Tangrowth,
+        Seaking, Magmotar, Torterra, Infernape, Empoleon, Serperior, Emboar,
+        Samurott, Chesnaught, Delphox, Greninja, Decidueye, Incineroar,
+        Primarina, Rillaboom, Cinderace, Inteleon, Meowscarada, Skeledirge,
+        Quaquaval, Machamp, Snorlax
+    ]
+
+    print("Choose your Pokémon:")
+    for idx, poke in enumerate(pokemons):
+        print(f"{idx + 1}. {poke.name} ({poke.types})")
+
+    while True:
+        try:
+            choice = int(input("Enter the number of your Pokémon: ")) - 1
+            if 0 <= choice < len(pokemons):
+                player_pokemon = pokemons[choice]
+                break
+            else:
+                print("Invalid choice. Try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+    import random
+    opponents = [p for i, p in enumerate(pokemons) if i != choice]
+    opponent_pokemon = random.choice(opponents)
+    print(f"\nYour opponent is {opponent_pokemon.name}!\n")
+
+    player_pokemon.fight(opponent_pokemon)
